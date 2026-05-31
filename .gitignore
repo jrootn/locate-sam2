@@ -1,0 +1,65 @@
+# Model weights (download separately — see scripts/download_models.sh)
+models/
+*.pt
+*.pth
+*.safetensors
+*.bin
+
+# Hugging Face / PyTorch caches
+.cache/
+.huggingface/
+
+# Data (download with scripts/download_data.sh, scripts/download_train2014.sh)
+data/
+datasets/
+*.zip
+*.tar
+*.tar.gz
+
+# Local eval outputs (large records/logs — summaries published under benchmarks/)
+outputs/
+results/
+runs/
+logs/
+wandb/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Paper build artifacts (source + figures are tracked)
+paper/build/
+research_paper/build/
+research_paper/*.aux
+research_paper/*.log
+research_paper/*.out
+research_paper/*.bbl
+research_paper/*.blg
+research_paper/*.pdf
+research_paper/*.synctex.gz
+research_paper/*.fdb_latexmk
+research_paper/*.fls
+*.aux
+*.log
+*.out
+
+# VM / local logs
+*.log
+paper_pack*.log
+missing_experiments.log
+
+# Hallucination probe PNG grid (stats in benchmarks/analysis/); add 1–2 panels to paper/figures manually if needed
+research_paper/figures/hallucination_probe/

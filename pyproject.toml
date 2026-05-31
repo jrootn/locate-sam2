@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "locate-sam2"
+version = "0.1.0"
+description = "Fast zero-shot text-guided segmentation with LocateAnything + SAM2"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Locate-SAM2 contributors" }]
+keywords = ["segmentation", "sam2", "locateanything", "grounding", "zero-shot"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+  "torch>=2.7.0",
+  "transformers==4.57.1",
+  "huggingface_hub>=0.26.0",
+  "accelerate>=0.34.0",
+  "opencv-python-headless>=4.11.0",
+  "Pillow>=11.0.0",
+  "numpy>=1.25.0",
+  "torchvision>=0.16.0",
+  "tqdm>=4.66.0",
+  "matplotlib>=3.8.0",
+  "pyyaml>=6.0.0",
+  "pycocotools>=2.0.7",
+]
+
+[project.optional-dependencies]
+demo = ["gradio>=5.0.0"]
+eval = ["decord>=0.6.0", "lmdb>=1.7.5"]
+
+[project.scripts]
+locate-sam2 = "locate_sam2.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["locate_sam2*"]

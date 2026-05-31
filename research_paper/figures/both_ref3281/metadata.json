@@ -1,0 +1,12 @@
+{
+  "dataset": "refcoco_val",
+  "ref_id": 3281,
+  "image_id": 544831,
+  "query": "biblia sacra vulgata book",
+  "group": "both_success",
+  "ours_miou": 0.982593944757901,
+  "dino_miou": 0.9823371068254729,
+  "delta_miou": 0.00025683793242803343,
+  "ours_box_iou": 0.9844702528820388,
+  "dino_box_iou": 0.9754276676871801
+}

@@ -1,0 +1,47 @@
+project:
+  name: locate-sam2
+
+models:
+  locateanything:
+    repo_id: nvidia/LocateAnything-3B
+    local_dir: models/LocateAnything-3B
+    trust_remote_code: true
+    dtype: bfloat16
+    generation_mode: hybrid  # fast | slow | hybrid
+    max_new_tokens: 8192
+
+  segment:
+    backend: sam2.1
+    repo_id: facebook/sam2.1-hiera-large
+    checkpoint: models/sam2.1_hiera_large.pt
+    multimask_output: true
+
+  baseline:
+    grounding_dino:
+      enabled: true
+      repo_id: IDEA-Research/grounding-dino-tiny
+      local_dir: data/grounding-dino-tiny
+      box_threshold: 0.25
+      text_threshold: 0.25
+    grounding_dino_swint:
+      enabled: false
+      repo_id: IDEA-Research/grounding-dino-base
+      local_dir: data/grounding-dino-swint
+      box_threshold: 0.25
+      text_threshold: 0.25
+
+pipeline:
+  # Prompt-to-Mask Adapter defaults
+  prompt_mode: box          # box | box_point | point
+  crop_mode: crop           # full | crop
+  crop_padding: 0.05
+  rerank: best_score        # top1 | best_score | largest_box
+
+paths:
+  data_dir: data
+  output_dir: outputs
+
+eval:
+  refcoco_subset_size: 200
+  refcoco_seed: 42
+  latency_sample_size: 50

@@ -1,0 +1,29 @@
+# Core — pin versions when pipeline is stable
+# Blackwell G4 GPU requires cu128 PyTorch (install separately):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+torch>=2.7.0
+transformers==4.57.1
+huggingface_hub>=0.26.0
+accelerate>=0.34.0
+
+# Vision / inference
+opencv-python-headless>=4.11.0
+Pillow>=11.0.0
+numpy>=1.25.0
+torchvision>=0.16.0
+
+decord>=0.6.0
+lmdb>=1.7.5
+requests>=2.31.0
+
+# SAM 2.1 via transformers (primary segmenter for v1)
+# SAM 3: install from facebookresearch/sam3 repo after HF gated access approved
+
+# Eval / utilities
+tqdm>=4.66.0
+matplotlib>=3.8.0
+pyyaml>=6.0.0
+pycocotools>=2.0.7
+
+# Optional demo
+gradio>=5.0.0

@@ -1,0 +1,11 @@
+{
+  "failure_mode": "spatial",
+  "ref_id": 24664,
+  "image_id": 298481,
+  "query": "back of gold tapestry chair at table closest to us",
+  "ours_miou": 0.13613933236574746,
+  "dino_miou": 0.8989287377736377,
+  "ours_box_iou": 0.9366369142699006,
+  "dino_box_iou": 0.9531509476328848,
+  "label_for_paper": "Failure (ii): spatial / ordinal language"
+}

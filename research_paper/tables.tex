@@ -1,0 +1,101 @@
+% Result tables in one consistent typography block.
+
+\begin{table}[t]
+  \centering
+  \caption{RefCOCO val ($n{=}3{,}811$, seed 42). Best non-oracle in \textbf{bold}.}
+  \label{tab:main}
+  \footnotesize
+  \setlength{\tabcolsep}{4.8pt}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccccccc@{}}
+    \toprule
+    Method & mIoU & cIoU & P@0.5 & P@0.7 & Box IoU & ms & GB \\
+    \midrule
+    DINO-Tiny + SAM2    & 0.441 & 0.354 & 48.6 & 43.3 & 0.506 & 146 & 2.9 \\
+    DINO-Base + SAM2    & 0.717 & 0.657 & 81.7 & 74.4 & 0.802 & 164 & 3.1 \\
+    Locate-SAM2 fast    & 0.769 & 0.745 & 87.5 & 79.2 & 0.847 & 190 & 8.9 \\
+    \textbf{Locate-SAM2 hybrid} & \textbf{0.772} & \textbf{0.753} & \textbf{88.1} & \textbf{80.0} & \textbf{0.851} & \textbf{195} & \textbf{8.9} \\
+    GT-box + SAM2 oracle & 0.836 & 0.830 & 95.2 & 88.5 & 1.000 & 72  & 1.3 \\
+    \bottomrule
+  \end{tabular*}
+
+  \vspace{0.7em}
+
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \captionof{table}{RefCOCO+ val ($n{=}3{,}805$).}
+    \label{tab:refcoco-plus}
+    \scriptsize
+    \renewcommand{\arraystretch}{1.08}
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
+      \toprule
+      Method & mIoU & P@0.5 & Box IoU & ms \\
+      \midrule
+      DINO-Tiny + SAM2  & 0.440 & 47.7 & 0.502 & 146 \\
+      DINO-Base + SAM2  & 0.612 & 69.4 & 0.691 & 164 \\
+      Locate-SAM2 fast  & 0.709 & 80.3 & 0.784 & 188 \\
+      \textbf{Locate-SAM2 hybrid} & \textbf{0.717} & \textbf{81.6} & \textbf{0.795} & 198 \\
+      GT-box + SAM2 oracle & 0.836 & 95.2 & 1.000 & 72 \\
+      \bottomrule
+    \end{tabular*}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.47\textwidth}
+    \centering
+    \captionof{table}{Adapter ablations (200 refs, seed 42).}
+    \label{tab:ablation}
+    \scriptsize
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcc@{}}
+      \toprule
+      Config & mIoU & P@0.5 \\
+      \midrule
+      default (hybrid, box, crop) & 0.777 & 89.5 \\
+      box + point & 0.766 & 89.0 \\
+      \textbf{point only} & \textbf{0.509} & \textbf{56.0} \\
+      no crop & 0.784 & 89.5 \\
+      top1 rerank & 0.775 & 89.5 \\
+      \bottomrule
+    \end{tabular*}
+  \end{minipage}
+\end{table}
+
+\begin{table}[t]
+  \centering
+  \caption{RefCOCO-g val ($n{=}5{,}000$, Google split).}
+  \label{tab:refcocog}
+  \footnotesize
+  \setlength{\tabcolsep}{4.8pt}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccccccc@{}}
+    \toprule
+    Method & mIoU & cIoU & P@0.5 & P@0.7 & Box IoU & ms & GB \\
+    \midrule
+    DINO-Tiny + SAM2    & 0.503 & 0.414 & 55.7 & 49.1 & 0.588 & 148 & 2.9 \\
+    DINO-Base + SAM2    & 0.666 & 0.589 & 75.4 & 67.5 & 0.760 & 166 & 3.1 \\
+    Locate-SAM2 fast    & 0.741 & 0.719 & 84.0 & 74.3 & 0.835 & 199 & 8.9 \\
+    \textbf{Locate-SAM2 hybrid} & \textbf{0.746} & \textbf{0.725} & \textbf{85.0} & \textbf{75.2} & \textbf{0.839} & \textbf{207} & \textbf{8.9} \\
+    GT-box + SAM2 oracle & 0.815 & 0.815 & 93.1 & 84.6 & 1.000 & 72  & 1.3 \\
+    \bottomrule
+  \end{tabular*}
+\end{table}
+
+\begin{table}[t]
+  \centering
+  \caption{RefCOCO and RefCOCO+ test splits. Primary comparison is DINO-Base + SAM2 versus Locate-SAM2 hybrid under the same adapter.}
+  \label{tab:test-splits}
+  \footnotesize
+  \setlength{\tabcolsep}{4.8pt}
+  \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llccccc@{}}
+    \toprule
+    Split & Method & $n$ & mIoU & P@0.5 & Box IoU & ms \\
+    \midrule
+    RefCOCO testA  & DINO-Base + SAM2 & 1,975 & 0.761 & 87.4 & 0.829 & 165 \\
+    RefCOCO testA  & \textbf{Locate-SAM2 hybrid} & 1,975 & \textbf{0.807} & \textbf{93.1} & \textbf{0.868} & 192 \\
+    RefCOCO testB  & DINO-Base + SAM2 & 1,810 & 0.661 & 73.5 & 0.757 & 164 \\
+    RefCOCO testB  & \textbf{Locate-SAM2 hybrid} & 1,810 & \textbf{0.730} & \textbf{81.5} & \textbf{0.820} & 197 \\
+    RefCOCO+ testA & DINO-Base + SAM2 & 1,975 & 0.708 & 81.3 & 0.774 & 165 \\
+    RefCOCO+ testA & \textbf{Locate-SAM2 hybrid} & 1,975 & \textbf{0.766} & \textbf{88.2} & \textbf{0.828} & 194 \\
+    RefCOCO+ testB & DINO-Base + SAM2 & 1,798 & 0.517 & 56.8 & 0.601 & 164 \\
+    RefCOCO+ testB & \textbf{Locate-SAM2 hybrid} & 1,798 & \textbf{0.650} & \textbf{72.4} & \textbf{0.741} & 203 \\
+    \bottomrule
+  \end{tabular*}
+\end{table}

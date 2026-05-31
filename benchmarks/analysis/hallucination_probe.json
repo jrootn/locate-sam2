@@ -1,0 +1,169 @@
+{
+  "n_probes": 16,
+  "box_emission_rate": 0.625,
+  "mask_emission_rate": 0.625,
+  "mean_sam_score_when_mask": 0.8969473302364349,
+  "note": "LocateAnything has no native detection threshold (unlike DINO). Mitigation: treat empty parse as no-detection; optionally gate on SAM iou_scores.",
+  "rows": [
+    {
+      "case_id": "img193168_neg8763",
+      "image_id": 193168,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "right pizza",
+      "emitted_box": false,
+      "emitted_mask": false,
+      "sam_mask_score": 0.0,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box>None</box><|im_end|>"
+    },
+    {
+      "case_id": "img193168_neg2030",
+      "image_id": 193168,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "right pizza",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9471569061279297,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><0><33><998><845></box><|im_end|>"
+    },
+    {
+      "case_id": "img510591_neg8763",
+      "image_id": 510591,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "brown guitar toilet seat",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9889539480209351,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box><639><77><998><875></box><|im_end|>"
+    },
+    {
+      "case_id": "img510591_neg2030",
+      "image_id": 510591,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "brown guitar toilet seat",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9408257007598877,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><119><373><316><838></box><|im_end|>"
+    },
+    {
+      "case_id": "img564676_neg8763",
+      "image_id": 564676,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "middle",
+      "emitted_box": false,
+      "emitted_mask": false,
+      "sam_mask_score": 0.0,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box>None</box><|im_end|>"
+    },
+    {
+      "case_id": "img564676_neg2030",
+      "image_id": 564676,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "middle",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.5045825242996216,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><5><6><994><994></box><|im_end|>"
+    },
+    {
+      "case_id": "img118848_neg8763",
+      "image_id": 118848,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "batter",
+      "emitted_box": false,
+      "emitted_mask": false,
+      "sam_mask_score": 0.0,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box>None</box><|im_end|>"
+    },
+    {
+      "case_id": "img118848_neg2030",
+      "image_id": 118848,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "batter",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9404008388519287,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><0><0><998><352></box><|im_end|>"
+    },
+    {
+      "case_id": "img417006_neg8763",
+      "image_id": 417006,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "wii",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9786736369132996,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box><128><148><252><769></box><|im_end|>"
+    },
+    {
+      "case_id": "img417006_neg2030",
+      "image_id": 417006,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "wii",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9895920753479004,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><486><104><630><765></box><|im_end|>"
+    },
+    {
+      "case_id": "img433336_neg8763",
+      "image_id": 433336,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "left person",
+      "emitted_box": false,
+      "emitted_mask": false,
+      "sam_mask_score": 0.0,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box>None</box><|im_end|>"
+    },
+    {
+      "case_id": "img433336_neg2030",
+      "image_id": 433336,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "left person",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9700993299484253,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><128><373><548><828></box><|im_end|>"
+    },
+    {
+      "case_id": "img445030_neg8763",
+      "image_id": 445030,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "man black shirt",
+      "emitted_box": false,
+      "emitted_mask": false,
+      "sam_mask_score": 0.0,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box>None</box><|im_end|>"
+    },
+    {
+      "case_id": "img445030_neg2030",
+      "image_id": 445030,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "man black shirt",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.7342633008956909,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><0><535><998><985></box><|im_end|>"
+    },
+    {
+      "case_id": "img494174_neg8763",
+      "image_id": 494174,
+      "negative_prompt": "purple elephant flying over the moon",
+      "gt_prompt": "car in back",
+      "emitted_box": false,
+      "emitted_mask": false,
+      "sam_mask_score": 0.0,
+      "answer_snippet": "<ref>purple elephant flying over the moon</ref><box>None</box><|im_end|>"
+    },
+    {
+      "case_id": "img494174_neg2030",
+      "image_id": 494174,
+      "negative_prompt": "quantum computer keyboard made of glass",
+      "gt_prompt": "car in back",
+      "emitted_box": true,
+      "emitted_mask": true,
+      "sam_mask_score": 0.9749250411987305,
+      "answer_snippet": "<ref>quantum computer keyboard made of glass</ref><box><512><538><728><784></box><|im_end|>"
+    }
+  ]
+}

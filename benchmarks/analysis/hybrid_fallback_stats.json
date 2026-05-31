@@ -1,0 +1,43 @@
+{
+  "n": 500,
+  "answer_diff": 54,
+  "box_diff": 27,
+  "fast_no_box": 0,
+  "hybrid_no_box": 0,
+  "examples": [
+    {
+      "ref_id": 39733,
+      "sentence": "smirnoff",
+      "fast": "<ref>smirnoff</ref><box><0><0><696><481></box><|im_end|>",
+      "hybrid": "<ref>smirnoff</ref><box><131><0><694><481></box><|im_end|>"
+    },
+    {
+      "ref_id": 1959,
+      "sentence": "200999",
+      "fast": "<ref>200999</ref><box><272><321><622><998></box><|im_end|>",
+      "hybrid": "<ref>200999</ref><box><272><580><488><998></box><|im_end|>"
+    },
+    {
+      "ref_id": 28514,
+      "sentence": "middle donut right image",
+      "fast": "<ref>middle donut right image</ref><box><672><382><850><747></box><|im_end|>",
+      "hybrid": "<ref>middle donut right image</ref><box><557><373><706><670></box><|im_end|>"
+    },
+    {
+      "ref_id": 43044,
+      "sentence": "first red book from left",
+      "fast": "<ref>first red book from left</ref><box><292><412><998><998></box><|im_end|>",
+      "hybrid": "<ref>first red book from left</ref><box><425><211><722><731></box><|im_end|>"
+    },
+    {
+      "ref_id": 37476,
+      "sentence": "person in the middle",
+      "fast": "<ref>person in the middle</ref><box><473><462><728><952></box><|im_end|>",
+      "hybrid": "<ref>person in the middle</ref><box><473><460><725><954></box><|im_end|>"
+    }
+  ],
+  "answer_diff_rate": 0.108,
+  "box_diff_rate": 0.054,
+  "fast_no_box_rate": 0.0,
+  "hybrid_no_box_rate": 0.0
+}

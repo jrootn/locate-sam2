@@ -1,0 +1,12 @@
+{
+  "dataset": "refcoco_val",
+  "ref_id": 2885,
+  "image_id": 549347,
+  "query": "man turned around",
+  "group": "ours_failures",
+  "ours_miou": 0.0,
+  "dino_miou": 0.8442894195510241,
+  "delta_miou": -0.8442894195510241,
+  "ours_box_iou": 0.0,
+  "dino_box_iou": 0.7083032705055857
+}

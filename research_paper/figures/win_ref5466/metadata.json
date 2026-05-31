@@ -1,0 +1,12 @@
+{
+  "dataset": "refcoco_val",
+  "ref_id": 5466,
+  "image_id": 518918,
+  "query": "right white spoon",
+  "group": "ours_wins_over_dino",
+  "ours_miou": 0.9848717948717949,
+  "dino_miou": 0.0,
+  "delta_miou": 0.9848717948717949,
+  "ours_box_iou": 0.9784901713457204,
+  "dino_box_iou": 0.0
+}

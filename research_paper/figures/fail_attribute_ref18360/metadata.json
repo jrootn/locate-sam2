@@ -1,0 +1,11 @@
+{
+  "failure_mode": "attribute",
+  "ref_id": 18360,
+  "image_id": 369805,
+  "query": "red bike",
+  "ours_miou": 0.12404470433160854,
+  "dino_miou": 0.7365625628309095,
+  "ours_box_iou": 0.31307674552455195,
+  "dino_box_iou": 0.8655086983043528,
+  "label_for_paper": "Failure (iii): attribute ambiguity"
+}
