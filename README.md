@@ -1,72 +1,66 @@
 # Locate-SAM2
 
-Training-free referring expression segmentation with [LocateAnything-3B](https://huggingface.co/nvidia/LocateAnything-3B) as the language grounder and [SAM 2.1](https://huggingface.co/facebook/sam2.1-hiera-large) as the segmenter. The system follows the modular layout used in Grounded-SAM work: text to box to mask, with a small prompt-to-mask adapter between grounding and SAM.
+Training-free referring expression segmentation with [NVIDIA LocateAnything-3B](https://huggingface.co/nvidia/LocateAnything-3B) as the language-conditioned grounder and [SAM 2.1](https://huggingface.co/facebook/sam2.1-hiera-large) as the mask generator.
 
-Paper source and figures: [`research_paper/`](research_paper/). Published metric summaries: [`benchmarks/`](benchmarks/).
+Locate-SAM2 follows the same modular idea used by Grounded-SAM style systems: text expression to box, box to SAM prompt, prompt to segmentation mask. The contribution in this repository is the integration and evaluation of LocateAnything as the grounder inside a SAM2 segmentation pipeline, with controlled comparisons against Grounding DINO plus the same SAM2 adapter.
 
-## Overview
+Paper source and manuscript figures: [`research_paper/`](research_paper/). Published benchmark summaries: [`benchmarks/`](benchmarks/).
 
-Given an image and a referring expression, LocateAnything predicts one or more boxes. The adapter converts each box into SAM prompts (box, box plus point, or point), optionally crops around the box, and selects a mask when SAM returns multiple candidates. The primary baseline is Grounding DINO (Swin-T) plus SAM 2.1 under the same adapter; Grounding DINO-Tiny is included as a lightweight reference.
+## What This Repository Shows
 
-Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
+The main empirical finding is consistent across the RefCOCO family: under the same SAM 2.1 prompt adapter, Locate-SAM2 hybrid improves over Grounding DINO-Base + SAM2 on RefCOCO, RefCOCO+, and RefCOCO-g validation splits, and on RefCOCO and RefCOCO+ testA/testB splits.
 
-Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
+This is a modular zero-shot pipeline comparison. It is not a leaderboard claim against supervised referring expression segmentation methods trained on mask annotations.
 
-### Pipeline
+## Method
+
+Given an image and a referring expression, the pipeline:
+
+1. sends the expression and image to a text-conditioned grounder,
+2. converts the predicted box into SAM2 prompts,
+3. optionally crops around the predicted region,
+4. asks SAM 2.1 for masks,
+5. selects the final mask from SAM candidates.
 
 ```mermaid
 flowchart LR
-  A["Image + referring expression"] --> B["Text grounder"]
+  A["Image + referring expression"] --> B["Text-conditioned grounder"]
   B --> C["Prompt-to-mask adapter"]
   C --> D["SAM 2.1"]
   D --> E["Segmentation mask"]
 ```
 
-Grounders compared under the **same** adapter and SAM 2.1 weights:
+Grounders are compared under the same adapter and SAM 2.1 weights.
 
 | Method | Grounder | Role |
 |--------|----------|------|
-| DINO-Tiny + SAM2 | Grounding DINO-Tiny | Lightweight visual baseline |
-| DINO-Base + SAM2 | Grounding DINO Swin-T | **Primary baseline** (result tables) |
-| Locate-SAM2 (fast) | LocateAnything-3B | Single-pass generation |
-| Locate-SAM2 (hybrid) | LocateAnything-3B | Hybrid generation (best) |
-| GT-box + SAM2 | Ground-truth box | Oracle upper bound |
+| DINO-Tiny + SAM2 | Grounding DINO-Tiny | Lightweight reference |
+| DINO-Base + SAM2 | Grounding DINO Swin-T | Primary baseline |
+| Locate-SAM2 fast | LocateAnything-3B | Single-pass LocateAnything decoding |
+| Locate-SAM2 hybrid | LocateAnything-3B | Best LocateAnything decoding setting |
+| GT-box + SAM2 | Ground-truth box | Diagnostic upper bound |
 
-### Qualitative results
+## Qualitative Examples
 
-Visual examples from **RefCOCO val** (full val = 3,811 referring expressions). Figures use the standard RES layout: input, ground-truth mask, baseline prediction, our prediction, and oracle.
-
-**How to read each column**
-
-| Column | Meaning |
-|--------|---------|
-| **Input** | COCO image; title = referring expression |
-| **GT mask** | RefCOCO ground-truth segmentation (green) |
-| **DINO-Tiny** | Grounding DINO-Tiny box (yellow) + SAM 2.1 mask (red); IoU in title |
-| **Locate-SAM2** | LocateAnything hybrid box (green) + SAM 2.1 mask (red); IoU in title |
-| **GT-box oracle** | SAM 2.1 given the GT box (blue); shows adapter ceiling |
-
-**Figure 1 — Hybrid wins** (DINO-Tiny misses or wrong box; hybrid correct):
+The examples below are from RefCOCO validation. Green boxes are grounder predictions, red overlays are SAM 2.1 masks, and mIoU is computed against the RefCOCO ground-truth mask.
 
 <p align="center">
-  <img src="docs/assets/comparison_wins.png" alt="RefCOCO val: Locate-SAM2 wins over DINO-Tiny" width="1000">
+  <img src="docs/assets/readme_refcoco_examples.png" alt="RefCOCO qualitative examples comparing input images, DINO-Tiny plus SAM2, and Locate-SAM2 hybrid" width="1000">
 </p>
 
-**Figure 2 — Hard cases** (both grounders struggle; oracle still reasonable):
+The first panel illustrates cases where the LocateAnything grounder recovers objects missed by DINO-Tiny under the same SAM2 adapter. The second panel shows selected failure modes: wrong-instance selection, spatial or ordinal language, attribute ambiguity, and unusual expressions.
 
 <p align="center">
-  <img src="docs/assets/comparison_failures.png" alt="RefCOCO val: hard referring expressions" width="1000">
+  <img src="docs/assets/readme_failure_taxonomy.png" alt="Observed RefCOCO failure modes for Locate-SAM2 hybrid" width="1000">
 </p>
 
-**Figure 3 — Failure taxonomy** (cases where hybrid picks the wrong object; DINO-Tiny often correct):
+We also include a small negative-prompt sanity check. This is not a benchmark score. It documents a practical limitation: LocateAnything does not expose the same kind of native detection confidence threshold as DINO, so impossible prompts may still produce a confident-looking box and mask.
 
 <p align="center">
-  <img src="docs/assets/readme_qualitative_failures.png" alt="RefCOCO val failure modes" width="1000">
+  <img src="docs/assets/readme_hallucination_probe.png" alt="Negative prompt sanity check showing a hallucinated mask for an impossible expression" width="1000">
 </p>
 
-Green box = grounder prediction. Red overlay = SAM 2.1 mask. mIoU = mask overlap vs RefCOCO GT.
-
-More exported panels (12 case folders, hallucination probe): [`research_paper/figures/`](research_paper/figures/). All methods and splits: [`benchmarks/`](benchmarks/) and Results below.
+More exported panels and case metadata are available in [`research_paper/figures/`](research_paper/figures/).
 
 ## Installation
 
@@ -75,17 +69,18 @@ Requires Python 3.10+, CUDA, and roughly 10 GB for model weights.
 ```bash
 git clone https://github.com/jrootn/locate-sam2.git
 cd locate-sam2
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -e .
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 
-bash scripts/download_models.sh      # LocateAnything-3B + SAM 2.1
-bash scripts/download_baseline.sh    # Grounding DINO-Tiny (optional)
-bash scripts/download_data.sh        # RefCOCO annotations + val images (~8 GB)
-bash scripts/download_train2014.sh # train2014 images for RefCOCO eval (~13 GB)
+bash scripts/download_models.sh       # LocateAnything-3B + SAM 2.1
+bash scripts/download_baseline.sh     # Grounding DINO-Tiny, optional
+bash scripts/download_data.sh         # RefCOCO annotations + val images
+bash scripts/download_train2014.sh    # train2014 images for RefCOCO-family eval
 ```
 
-Inference:
+Python inference:
 
 ```python
 from locate_sam2 import segment
@@ -93,23 +88,25 @@ from locate_sam2 import segment
 masks = segment("image.jpg", "red car on the left")
 ```
 
+CLI inference:
+
 ```bash
 locate-sam2 segment image.jpg "person holding umbrella" -o out.png
 ```
 
-Adapter defaults live in `configs/default.yaml` (`prompt_mode`, `crop_mode`, `rerank`, `generation_mode`).
+Adapter defaults live in [`configs/default.yaml`](configs/default.yaml).
 
-## Reproducing benchmarks
+## Reproducing Benchmarks
 
-Full validation (all methods, zero subset size):
+Full benchmark runs:
 
 ```bash
-bash scripts/run_full_eval_suite.sh          # RefCOCO val
-bash scripts/run_missing_experiments.sh      # RefCOCO+, RefCOCO-g
-bash scripts/run_test_splits.sh              # RefCOCO / RefCOCO+ testA, testB
+bash scripts/run_full_eval_suite.sh      # RefCOCO val
+bash scripts/run_missing_experiments.sh  # RefCOCO+ and RefCOCO-g val
+bash scripts/run_test_splits.sh          # RefCOCO and RefCOCO+ testA/testB
 ```
 
-Subset runs for development:
+Development runs:
 
 ```bash
 python scripts/run_benchmark.py --subset-size 200 --seed 42
@@ -117,77 +114,82 @@ python scripts/run_ablation.py --subset-size 200
 python scripts/validate_eval.py --subset-size 200 --seed 42
 ```
 
-Outputs are written under `outputs/` locally. Summary JSON files checked into the repository are under `benchmarks/`.
+Local outputs are written under `outputs/`. Summary JSON files checked into the repository are under [`benchmarks/`](benchmarks/).
 
 ## Results
 
-Numbers below are taken from `benchmarks/`. Latency was measured on one NVIDIA RTX PRO 6000 (Blackwell); peak VRAM is often more informative across hardware.
+Metrics are mean mask IoU and precision at IoU 0.5. Validation numbers use RefCOCO, RefCOCO+, and RefCOCO-g val. Test numbers use RefCOCO and RefCOCO+ testA/testB. Latency and memory were measured on one NVIDIA RTX PRO 6000 Blackwell GPU.
 
-### RefCOCO val (n = 3,811)
+### Validation Splits
 
-| Method | mIoU | P@0.5 | Peak VRAM (GB) |
-|--------|-----:|------:|---------------:|
-| Grounding DINO-Tiny + SAM2 | 0.441 | 48.6% | 2.9 |
-| Grounding DINO-Base + SAM2 | 0.717 | 81.7% | 3.1 |
-| Locate-SAM2 (fast) | 0.769 | 87.5% | 8.9 |
-| Locate-SAM2 (hybrid) | **0.772** | **88.1%** | 8.9 |
-| GT-box + SAM2 (oracle) | 0.836 | 95.2% | 1.3 |
+| Dataset | n | DINO-Tiny mIoU | DINO-Base mIoU | Locate-SAM2 hybrid mIoU | GT-box oracle mIoU |
+|---------|--:|---------------:|---------------:|------------------------:|-------------------:|
+| RefCOCO val | 3,811 | 0.441 | 0.717 | **0.772** | 0.836 |
+| RefCOCO+ val | 3,805 | 0.440 | 0.612 | **0.717** | 0.836 |
+| RefCOCO-g val | 5,000 | 0.503 | 0.666 | **0.746** | 0.815 |
 
-Hybrid exceeds DINO-Base by 5.5 mIoU on this split and reaches 92.3% of the oracle mIoU.
+### Test Splits
 
-### RefCOCO+ val (n = 3,805)
+| Dataset | Split | n | DINO-Base mIoU | Locate-SAM2 hybrid mIoU | DINO-Base P@0.5 | Locate-SAM2 hybrid P@0.5 |
+|---------|-------|--:|---------------:|------------------------:|----------------:|-------------------------:|
+| RefCOCO | testA | 1,975 | 0.761 | **0.807** | 87.4% | **93.1%** |
+| RefCOCO | testB | 1,810 | 0.661 | **0.730** | 73.5% | **81.5%** |
+| RefCOCO+ | testA | 1,975 | 0.708 | **0.766** | 81.3% | **88.2%** |
+| RefCOCO+ | testB | 1,798 | 0.517 | **0.650** | 56.8% | **72.4%** |
 
-| Method | mIoU | P@0.5 |
-|--------|-----:|------:|
-| Grounding DINO-Base + SAM2 | 0.612 | 69.4% |
-| Locate-SAM2 (hybrid) | **0.717** | **81.6%** |
-| GT-box + SAM2 (oracle) | 0.836 | 95.2% |
+### RefCOCO Val Detail
 
-### RefCOCO-g val (n = 5,000, Google split)
+| Method | mIoU | P@0.5 | Peak VRAM |
+|--------|-----:|------:|----------:|
+| Grounding DINO-Tiny + SAM2 | 0.441 | 48.6% | 2.9 GB |
+| Grounding DINO-Base + SAM2 | 0.717 | 81.7% | 3.1 GB |
+| Locate-SAM2 fast | 0.769 | 87.5% | 8.9 GB |
+| Locate-SAM2 hybrid | **0.772** | **88.1%** | 8.9 GB |
+| GT-box + SAM2 oracle | 0.836 | 95.2% | 1.3 GB |
 
-| Method | mIoU | P@0.5 |
-|--------|-----:|------:|
-| Grounding DINO-Base + SAM2 | 0.666 | 75.4% |
-| Locate-SAM2 (hybrid) | **0.746** | **85.0%** |
-| GT-box + SAM2 (oracle) | 0.815 | 93.1% |
+On RefCOCO val, hybrid reaches 92.3% of the GT-box oracle mIoU. The remaining gap is a useful diagnostic: much of the remaining error comes from grounding, while SAM2 performs strongly when given the correct box.
 
-### RefCOCO / RefCOCO+ test splits (hybrid vs DINO-Base)
+Full machine-readable tables are in [`benchmarks/`](benchmarks/), including `benchmarks/refcoco_val_table.json`, `benchmarks/refcoco_plus_table.json`, `benchmarks/refcocog_table.json`, and `benchmarks/test_splits/`.
 
-| Dataset | Split | Hybrid mIoU | DINO-Base mIoU |
-|---------|-------|------------:|---------------:|
-| RefCOCO | testA | 0.807 | 0.761 |
-| RefCOCO | testB | 0.730 | 0.661 |
-| RefCOCO+ | testA | 0.766 | 0.708 |
-| RefCOCO+ | testB | 0.650 | 0.517 |
+## Scope and Limitations
 
-Full tables: `benchmarks/refcoco_val_table.json`, `benchmarks/refcoco_plus_table.json`, `benchmarks/refcocog_table.json`, `benchmarks/test_splits/`.
+Locate-SAM2 should be read as a training-free modular segmentation system, not as a supervised RES model. The comparisons here control SAM2 and the adapter while changing the grounder. The paper does not claim superiority over methods such as LAVT or CRIS that train directly for referring expression segmentation.
 
-This repository reports modular zero-shot pipeline comparisons. It does not compare against supervised RES methods (e.g. LAVT, CRIS) that train on mask annotations.
+Known limitations:
 
-## Repository layout
+| Limitation | Evidence in this repo |
+|------------|-----------------------|
+| Wrong object instance selection | RefCOCO failure taxonomy |
+| Spatial and ordinal expressions remain difficult | RefCOCO failure taxonomy |
+| Impossible prompts may still produce boxes | Negative-prompt sanity check |
+| OOD generalization is not scored | OOD protocol exists, but no final image set is included |
+
+## Repository Layout
 
 ```text
-locate_sam2/          Python package (grounder, adapter, SAM2, eval)
-scripts/              Download helpers and eval drivers
+locate_sam2/          Python package: grounder, adapter, SAM2, evaluation
+scripts/              Download helpers, benchmark drivers, figure builders
 configs/              Default pipeline settings
-benchmarks/           Published summary metrics (no per-image logs)
-research_paper/       LaTeX manuscript and qualitative figures
+benchmarks/           Published summary metrics
+research_paper/       LaTeX manuscript and paper figures
 experiments/          Notes and OOD protocol templates
+docs/assets/          README figures
 ```
 
-Not versioned: `models/`, `data/`, `outputs/`, virtual environments. Per-reference eval logs remain local after a full run.
+Not versioned: `models/`, `data/`, `outputs/`, and virtual environments. Per-reference evaluation logs remain local after full runs.
 
 ## License
 
 | Component | License |
 |-----------|---------|
 | This repository | MIT |
-| LocateAnything-3B | [NVIDIA license](https://huggingface.co/nvidia/LocateAnything-3B) (non-commercial; academic use permitted) |
+| LocateAnything-3B | [NVIDIA license](https://huggingface.co/nvidia/LocateAnything-3B), non-commercial academic use |
 | SAM 2.1 | Apache 2.0 |
 | Grounding DINO | Apache 2.0 |
 
 ## References
 
-- Ren et al., Grounded SAM, arXiv:2401.14159
-- Wang et al., LocateAnything, arXiv:2605.27365
-- Ravi et al., SAM 2, 2024
+- Wang et al., [LocateAnything](https://arxiv.org/abs/2605.27365), 2026.
+- Ravi et al., [SAM 2](https://arxiv.org/abs/2408.00714), 2024.
+- Liu et al., [Grounding DINO](https://arxiv.org/abs/2303.05499), 2023.
+- Ren et al., [Grounded SAM](https://arxiv.org/abs/2401.14159), 2024.
