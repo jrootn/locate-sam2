@@ -10,17 +10,35 @@ Given an image and a referring expression, LocateAnything predicts one or more b
 
 Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
 
-### Qualitative results
+### What we evaluated
 
-RefCOCO validation overlays under the same adapter (input, Grounding DINO-Tiny + SAM2, Locate-SAM2 hybrid):
+| Scope | Details |
+|-------|---------|
+| **Datasets** | RefCOCO, RefCOCO+, RefCOCO-g (val); RefCOCO & RefCOCO+ testA/testB |
+| **Grounders compared** | Grounding DINO-Tiny, Grounding DINO-Base (Swin-T), LocateAnything-3B (fast & hybrid), GT-box oracle |
+| **Shared stack** | Same SAM 2.1 segmenter and prompt-to-mask adapter for every method |
+| **Metrics** | Mask mIoU, P@0.5, box IoU, latency — see [`benchmarks/`](benchmarks/) |
+| **Extra probes** | Hybrid fallback logging, negative-prompt hallucination probe — [`benchmarks/analysis/`](benchmarks/analysis/) |
+
+The tables below use **DINO-Base + SAM2** as the main baseline (strongest open-vocabulary detector in this repo). Qualitative panels use **DINO-Tiny + SAM2** side-by-side with hybrid because the visual gap is clearer on hard spatial cases; hybrid also beats DINO-Base on all reported val/test splits.
+
+### Qualitative examples (RefCOCO val)
+
+Each panel is one referring expression. **Input** = COCO image + text prompt. **Green box** = grounder prediction. **Red mask** = SAM 2.1 output inside that box. **mIoU** = overlap with the RefCOCO ground-truth mask (1.0 = perfect).
+
+**Wins and agreement** — hybrid recovers the referent when DINO-Tiny fails, or both methods agree:
 
 <p align="center">
-  <img src="docs/assets/readme_qualitative.png" alt="RefCOCO validation qualitative comparison" width="960">
+  <img src="docs/assets/readme_qualitative_wins.png" alt="RefCOCO val wins and agreement" width="980">
 </p>
 
-<p align="center">Top: spatial win (Ref 5466). Middle: grounding failure (Ref 2885). Bottom: spatial failure (Ref 5750). Labels and mIoU are in the figure; overlays have no baked-in query text.</p>
+**Failure modes** — cases where hybrid picks the wrong object (not cherry-picked wins; see [`research_paper/figures/`](research_paper/figures/) for all exported cases):
 
-More cases (attribute, rare expressions, test-split numbers): [`research_paper/figures/`](research_paper/figures/), [`benchmarks/`](benchmarks/).
+<p align="center">
+  <img src="docs/assets/readme_qualitative_failures.png" alt="RefCOCO val failure taxonomy" width="980">
+</p>
+
+These 8 examples (24 image panels) are a visual sample from full val runs (3,811 refs on RefCOCO alone). More labeled cases — spatial, attribute, rare phrases, hallucination probe — live under [`research_paper/figures/`](research_paper/figures/). Aggregate numbers for every method and split are in [`benchmarks/`](benchmarks/) and the Results section below.
 
 ## Installation
 
