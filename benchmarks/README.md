@@ -1,25 +1,16 @@
-# Published benchmark summaries
+# Benchmark summaries
 
-Small JSON artifacts for **reproducing paper numbers** without cloning multi-GB eval logs.
+JSON summaries for the numbers reported in the paper and root README. Per-sample `*_records.json` files are not stored in git; regenerate them with the scripts listed in the root README.
 
-Full per-sample `*_records.json` files stay local under `outputs/` (gitignored). Re-run eval with:
+| File | Description |
+|------|-------------|
+| `refcoco_val_table.json` | RefCOCO validation, all methods |
+| `refcoco_plus_table.json` | RefCOCO+ validation |
+| `refcocog_table.json` | RefCOCO-g validation (Google split) |
+| `test_splits/` | RefCOCO and RefCOCO+ testA and testB (hybrid and DINO-Base) |
+| `analysis/` | Hybrid vs fast and negative-prompt probe statistics |
+| `ablation_table.json` | Adapter ablations (200 references, seed 42) |
+| `dino_threshold_sweep.json` | Grounding DINO-Tiny threshold sweep |
+| `benchmark_subset_200.json` | Initial 200-reference comparison |
 
-```bash
-bash scripts/run_missing_experiments.sh   # val splits
-bash scripts/run_test_splits.sh           # testA / testB
-```
-
-## Files
-
-| Path | Contents |
-|------|----------|
-| `refcoco_val_table.json` | RefCOCO val — all methods |
-| `refcoco_plus_table.json` | RefCOCO+ val |
-| `refcocog_table.json` | RefCOCO-g val (Google split) |
-| `test_splits/` | testA/testB summaries (hybrid + DINO-Base) |
-| `analysis/` | Hybrid fallback + hallucination probe stats |
-| `ablation_table.json` | 200-ref adapter ablations |
-| `dino_threshold_sweep.json` | DINO-Tiny threshold sanity check |
-| `benchmark_subset_200.json` | Early 200-ref comparison |
-
-Numbers match `research_paper/UPDATE_GUIDE.md`.
+Paper update notes: [`../research_paper/UPDATE_GUIDE.md`](../research_paper/UPDATE_GUIDE.md).
