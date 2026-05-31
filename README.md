@@ -10,6 +10,34 @@ Given an image and a referring expression, LocateAnything predicts one or more b
 
 Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
 
+### Pipeline
+
+```mermaid
+flowchart LR
+  A["Image + referring expression"] --> B["LocateAnything-3B"]
+  B --> C["Prompt-to-mask adapter"]
+  C --> D["SAM 2.1"]
+  D --> E["Segmentation mask"]
+```
+
+The adapter controls SAM prompting (box / box+point / point), optional cropping around the predicted box, and mask selection when SAM returns multiple candidates.
+
+### Examples
+
+RefCOCO validation cases under a shared adapter (Grounding DINO-Tiny + SAM2 vs Locate-SAM2 hybrid):
+
+<p align="center">
+  <img src="docs/assets/comparison_wins.png" alt="RefCOCO validation: DINO-Tiny + SAM2 vs Locate-SAM2 hybrid" width="900">
+</p>
+
+<p align="center">
+  <img src="docs/assets/comparison_failures.png" alt="RefCOCO validation failure and agreement cases" width="900">
+</p>
+
+<p align="center"><sub>Top: cases where hybrid recovers the referent. Bottom: grounding failure (left) and both methods succeed (right). Overlays from <code>research_paper/figures/</code>; mIoU vs ground truth in figure metadata.</sub></p>
+
+Additional labeled failure modes (spatial, attribute, rare expressions) are in [`research_paper/figures/`](research_paper/figures/).
+
 ## Installation
 
 Requires Python 3.10+, CUDA, and roughly 10 GB for model weights.
