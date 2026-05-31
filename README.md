@@ -181,6 +181,19 @@ We do **not** claim SOTA or best zero-shot segmentation. See `PAPER.md` for draf
 
 ---
 
+## Repository contents
+
+| Included in git | Not included (local / download) |
+|-----------------|----------------------------------|
+| `locate_sam2/` + `scripts/` | Model weights (`models/`) |
+| `configs/`, `benchmarks/` summaries | COCO / RefCOCO data (`data/`) |
+| `research_paper/` LaTeX + qual figures | Full eval logs (`outputs/*_records.json`) |
+| OOD protocol templates | `.venv/`, VM logs |
+
+**Public repo:** https://github.com/jrootn/locate-sam2
+
+---
+
 ## License
 
 LocateAnything: NVIDIA non-commercial (academic/arXiv OK). SAM 2.1: Apache 2.0.
