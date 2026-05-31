@@ -76,14 +76,12 @@ def _render_row(
     oracle_res = oracle_pipe.run(image, sentence)
 
     cols = ["Input", "GT mask", "DINO-Tiny", "Locate-SAM2", "Oracle"]
-    fig, axes = plt.subplots(1, 5, figsize=(20, 4))
+    fig, axes = plt.subplots(1, 5, figsize=(22, 4.5))
 
-    for ax, title in zip(axes, cols):
+    for ax, col_title in zip(axes, cols):
         ax.imshow(img)
-        ax.set_title(title, fontsize=9)
+        ax.set_title(col_title, fontsize=13, pad=6)
         ax.axis("off")
-
-    axes[0].set_title(f'"{sentence[:50]}"', fontsize=8)
 
     if gt_mask.any():
         axes[1].imshow(_mask_overlay(img, gt_mask, (0, 1, 0, 0.45)))
@@ -92,18 +90,18 @@ def _render_row(
         axes[2].imshow(_mask_overlay(img, dres.masks[0]))
         if dres.boxes:
             _box_on_ax(axes[2], dres.boxes[0], "yellow")
-    axes[2].set_title(f"DINO-Tiny\nIoU={dino_rec['iou']:.2f}", fontsize=8)
+    axes[2].set_title(f"DINO-Tiny\nIoU={dino_rec['iou']:.2f}", fontsize=12)
 
     if ores.masks:
         axes[3].imshow(_mask_overlay(img, ores.masks[0]))
         if ores.boxes:
             _box_on_ax(axes[3], ores.boxes[0], "lime")
-    axes[3].set_title(f"Locate-SAM2\nIoU={ours_rec['iou']:.2f}", fontsize=8)
+    axes[3].set_title(f"Locate-SAM2\nIoU={ours_rec['iou']:.2f}", fontsize=12)
 
     if oracle_res.masks:
         axes[4].imshow(_mask_overlay(img, oracle_res.masks[0], (0, 0.5, 1, 0.45)))
     if oracle_rec:
-        axes[4].set_title(f"GT-box oracle\nIoU={oracle_rec['iou']:.2f}", fontsize=8)
+        axes[4].set_title(f"GT-box oracle\nIoU={oracle_rec['iou']:.2f}", fontsize=12)
 
     fig.tight_layout()
     fig.canvas.draw()

@@ -16,12 +16,18 @@ def save_overlay(
     masks: list[np.ndarray],
     output_path: Path,
     title: str = "",
+    *,
+    dpi: int = 200,
+    box_linewidth: float = 3.0,
 ) -> None:
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+    """Save box + mask overlay. Captions belong in the paper/README, not on the image."""
+    fig, ax = plt.subplots(1, 1, figsize=(8, 8))
     ax.imshow(image)
     ax.axis("off")
+    ax.set_axis_off()
+    # Do not draw long query strings on the image; they become unreadable when scaled.
     if title:
-        ax.set_title(title, fontsize=10)
+        ax.set_title(title, fontsize=14, pad=8)
 
     for idx, box in enumerate(boxes):
         rect = Rectangle(
@@ -30,7 +36,7 @@ def save_overlay(
             box.y2 - box.y1,
             fill=False,
             edgecolor="lime",
-            linewidth=2,
+            linewidth=box_linewidth,
         )
         ax.add_patch(rect)
         if idx < len(masks):
@@ -41,6 +47,6 @@ def save_overlay(
             ax.imshow(overlay)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.tight_layout()
-    fig.savefig(output_path, dpi=150, bbox_inches="tight")
+    fig.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    fig.savefig(output_path, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)

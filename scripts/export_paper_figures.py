@@ -119,9 +119,9 @@ def export_case(
     dres = dino_pipe.run_path(image_path, orec["sentence"])
 
     if ores.masks:
-        save_overlay(image, ores.boxes, ores.masks, out_dir / "ours_overlay.png", orec["sentence"])
+        save_overlay(image, ores.boxes, ores.masks, out_dir / "ours_overlay.png")
     if dres.masks:
-        save_overlay(image, dres.boxes, dres.masks, out_dir / "dino_overlay.png", orec["sentence"])
+        save_overlay(image, dres.boxes, dres.masks, out_dir / "dino_overlay.png")
 
     meta = {
         "failure_mode": mode,

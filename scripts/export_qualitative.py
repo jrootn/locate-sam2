@@ -96,11 +96,9 @@ def main() -> None:
             (out_dir / "metadata.json").write_text(json.dumps(meta, indent=2))
 
             if ores.masks:
-                _save_mask(ores.masks[0], out_dir / "ours_mask.png")
-                save_overlay(image, ores.boxes, ores.masks, out_dir / "ours_overlay.png", orec["sentence"])
+                save_overlay(image, ores.boxes, ores.masks, out_dir / "ours_overlay.png")
             if dres.masks:
-                _save_mask(dres.masks[0], out_dir / "dino_mask.png")
-                save_overlay(image, dres.boxes, dres.masks, out_dir / "dino_overlay.png", orec["sentence"])
+                save_overlay(image, dres.boxes, dres.masks, out_dir / "dino_overlay.png")
 
             manifest.append({"group": group, "ref_id": ref_id, "dir": str(out_dir.relative_to(args.output_dir))})
             print(f"exported {out_dir}")

@@ -12,34 +12,13 @@ Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO
 
 ### Qualitative results
 
-RefCOCO validation overlays under the same adapter. Each row: input, Grounding DINO-Tiny + SAM2, Locate-SAM2 hybrid.
-
-**Ref 5466** ("right white spoon")
+RefCOCO validation overlays under the same adapter (input, Grounding DINO-Tiny + SAM2, Locate-SAM2 hybrid):
 
 <p align="center">
-  <img src="research_paper/figures/win_ref5466/image_raw.jpg" width="30%" alt="Input">
-  <img src="research_paper/figures/win_ref5466/dino_overlay.png" width="30%" alt="DINO-Tiny + SAM2">
-  <img src="research_paper/figures/win_ref5466/ours_overlay.png" width="30%" alt="Locate-SAM2 hybrid">
+  <img src="docs/assets/readme_qualitative.png" alt="RefCOCO validation qualitative comparison" width="960">
 </p>
-<p align="center"><sub>Hybrid mIoU 0.98; DINO-Tiny mIoU 0.00.</sub></p>
 
-**Ref 2885** ("man turned around")
-
-<p align="center">
-  <img src="research_paper/figures/fail_ref2885/image_raw.jpg" width="30%" alt="Input">
-  <img src="research_paper/figures/fail_ref2885/dino_overlay.png" width="30%" alt="DINO-Tiny + SAM2">
-  <img src="research_paper/figures/fail_ref2885/ours_overlay.png" width="30%" alt="Locate-SAM2 hybrid">
-</p>
-<p align="center"><sub>Hybrid selects the wrong person (mIoU 0.00); DINO-Tiny mIoU 0.84.</sub></p>
-
-**Ref 5750** ("zebra on left")
-
-<p align="center">
-  <img src="research_paper/figures/fail_spatial_ref5750/image_raw.jpg" width="30%" alt="Input">
-  <img src="research_paper/figures/fail_spatial_ref5750/dino_overlay.png" width="30%" alt="DINO-Tiny + SAM2">
-  <img src="research_paper/figures/fail_spatial_ref5750/ours_overlay.png" width="30%" alt="Locate-SAM2 hybrid">
-</p>
-<p align="center"><sub>Hybrid mIoU 0.28; DINO-Tiny mIoU 0.94.</sub></p>
+<p align="center">Top: spatial win (Ref 5466). Middle: grounding failure (Ref 2885). Bottom: spatial failure (Ref 5750). Labels and mIoU are in the figure; overlays have no baked-in query text.</p>
 
 More cases (attribute, rare expressions, test-split numbers): [`research_paper/figures/`](research_paper/figures/), [`benchmarks/`](benchmarks/).
 

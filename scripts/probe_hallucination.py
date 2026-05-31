@@ -75,7 +75,7 @@ def main() -> None:
             (case_dir / "query.txt").write_text(prompt)
             (case_dir / "gt_query.txt").write_text(gt_sent)
             if result.masks:
-                save_overlay(image, result.boxes, result.masks, case_dir / "ours_overlay.png", prompt[:80])
+                save_overlay(image, result.boxes, result.masks, case_dir / "ours_overlay.png")
 
             rows.append({
                 "case_id": case_id,
