@@ -10,33 +10,38 @@ Given an image and a referring expression, LocateAnything predicts one or more b
 
 Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
 
-### Pipeline
+### Qualitative results
 
-```mermaid
-flowchart LR
-  A["Image + referring expression"] --> B["LocateAnything-3B"]
-  B --> C["Prompt-to-mask adapter"]
-  C --> D["SAM 2.1"]
-  D --> E["Segmentation mask"]
-```
+RefCOCO validation overlays under the same adapter. Each row: input, Grounding DINO-Tiny + SAM2, Locate-SAM2 hybrid.
 
-The adapter controls SAM prompting (box / box+point / point), optional cropping around the predicted box, and mask selection when SAM returns multiple candidates.
-
-### Examples
-
-RefCOCO validation cases under a shared adapter (Grounding DINO-Tiny + SAM2 vs Locate-SAM2 hybrid):
+**Ref 5466** ("right white spoon")
 
 <p align="center">
-  <img src="docs/assets/comparison_wins.png" alt="RefCOCO validation: DINO-Tiny + SAM2 vs Locate-SAM2 hybrid" width="900">
+  <img src="research_paper/figures/win_ref5466/image_raw.jpg" width="30%" alt="Input">
+  <img src="research_paper/figures/win_ref5466/dino_overlay.png" width="30%" alt="DINO-Tiny + SAM2">
+  <img src="research_paper/figures/win_ref5466/ours_overlay.png" width="30%" alt="Locate-SAM2 hybrid">
 </p>
+<p align="center"><sub>Hybrid mIoU 0.98; DINO-Tiny mIoU 0.00.</sub></p>
+
+**Ref 2885** ("man turned around")
 
 <p align="center">
-  <img src="docs/assets/comparison_failures.png" alt="RefCOCO validation failure and agreement cases" width="900">
+  <img src="research_paper/figures/fail_ref2885/image_raw.jpg" width="30%" alt="Input">
+  <img src="research_paper/figures/fail_ref2885/dino_overlay.png" width="30%" alt="DINO-Tiny + SAM2">
+  <img src="research_paper/figures/fail_ref2885/ours_overlay.png" width="30%" alt="Locate-SAM2 hybrid">
 </p>
+<p align="center"><sub>Hybrid selects the wrong person (mIoU 0.00); DINO-Tiny mIoU 0.84.</sub></p>
 
-<p align="center"><sub>Top: cases where hybrid recovers the referent. Bottom: grounding failure (left) and both methods succeed (right). Overlays from <code>research_paper/figures/</code>; mIoU vs ground truth in figure metadata.</sub></p>
+**Ref 5750** ("zebra on left")
 
-Additional labeled failure modes (spatial, attribute, rare expressions) are in [`research_paper/figures/`](research_paper/figures/).
+<p align="center">
+  <img src="research_paper/figures/fail_spatial_ref5750/image_raw.jpg" width="30%" alt="Input">
+  <img src="research_paper/figures/fail_spatial_ref5750/dino_overlay.png" width="30%" alt="DINO-Tiny + SAM2">
+  <img src="research_paper/figures/fail_spatial_ref5750/ours_overlay.png" width="30%" alt="Locate-SAM2 hybrid">
+</p>
+<p align="center"><sub>Hybrid mIoU 0.28; DINO-Tiny mIoU 0.94.</sub></p>
+
+More cases (attribute, rare expressions, test-split numbers): [`research_paper/figures/`](research_paper/figures/), [`benchmarks/`](benchmarks/).
 
 ## Installation
 
