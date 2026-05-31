@@ -10,35 +10,63 @@ Given an image and a referring expression, LocateAnything predicts one or more b
 
 Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
 
-### What we evaluated
+Evaluation uses RefCOCO, RefCOCO+, and RefCOCO-g validation splits, plus RefCOCO and RefCOCO+ testA and testB. Metrics are mean mask IoU and precision at IoU 0.5, with a GT-box plus SAM oracle for diagnostic comparison.
 
-| Scope | Details |
-|-------|---------|
-| **Datasets** | RefCOCO, RefCOCO+, RefCOCO-g (val); RefCOCO & RefCOCO+ testA/testB |
-| **Grounders compared** | Grounding DINO-Tiny, Grounding DINO-Base (Swin-T), LocateAnything-3B (fast & hybrid), GT-box oracle |
-| **Shared stack** | Same SAM 2.1 segmenter and prompt-to-mask adapter for every method |
-| **Metrics** | Mask mIoU, P@0.5, box IoU, latency — see [`benchmarks/`](benchmarks/) |
-| **Extra probes** | Hybrid fallback logging, negative-prompt hallucination probe — [`benchmarks/analysis/`](benchmarks/analysis/) |
+### Pipeline
 
-The tables below use **DINO-Base + SAM2** as the main baseline (strongest open-vocabulary detector in this repo). Qualitative panels use **DINO-Tiny + SAM2** side-by-side with hybrid because the visual gap is clearer on hard spatial cases; hybrid also beats DINO-Base on all reported val/test splits.
+```mermaid
+flowchart LR
+  A["Image + referring expression"] --> B["Text grounder"]
+  B --> C["Prompt-to-mask adapter"]
+  C --> D["SAM 2.1"]
+  D --> E["Segmentation mask"]
+```
 
-### Qualitative examples (RefCOCO val)
+Grounders compared under the **same** adapter and SAM 2.1 weights:
 
-Each panel is one referring expression. **Input** = COCO image + text prompt. **Green box** = grounder prediction. **Red mask** = SAM 2.1 output inside that box. **mIoU** = overlap with the RefCOCO ground-truth mask (1.0 = perfect).
+| Method | Grounder | Role |
+|--------|----------|------|
+| DINO-Tiny + SAM2 | Grounding DINO-Tiny | Lightweight visual baseline |
+| DINO-Base + SAM2 | Grounding DINO Swin-T | **Primary baseline** (result tables) |
+| Locate-SAM2 (fast) | LocateAnything-3B | Single-pass generation |
+| Locate-SAM2 (hybrid) | LocateAnything-3B | Hybrid generation (best) |
+| GT-box + SAM2 | Ground-truth box | Oracle upper bound |
 
-**Wins and agreement** — hybrid recovers the referent when DINO-Tiny fails, or both methods agree:
+### Qualitative results
+
+Visual examples from **RefCOCO val** (full val = 3,811 referring expressions). Figures use the standard RES layout: input, ground-truth mask, baseline prediction, our prediction, and oracle.
+
+**How to read each column**
+
+| Column | Meaning |
+|--------|---------|
+| **Input** | COCO image; title = referring expression |
+| **GT mask** | RefCOCO ground-truth segmentation (green) |
+| **DINO-Tiny** | Grounding DINO-Tiny box (yellow) + SAM 2.1 mask (red); IoU in title |
+| **Locate-SAM2** | LocateAnything hybrid box (green) + SAM 2.1 mask (red); IoU in title |
+| **GT-box oracle** | SAM 2.1 given the GT box (blue); shows adapter ceiling |
+
+**Figure 1 — Hybrid wins** (DINO-Tiny misses or wrong box; hybrid correct):
 
 <p align="center">
-  <img src="docs/assets/readme_qualitative_wins.png" alt="RefCOCO val wins and agreement" width="980">
+  <img src="docs/assets/comparison_wins.png" alt="RefCOCO val: Locate-SAM2 wins over DINO-Tiny" width="1000">
 </p>
 
-**Failure modes** — cases where hybrid picks the wrong object (not cherry-picked wins; see [`research_paper/figures/`](research_paper/figures/) for all exported cases):
+**Figure 2 — Hard cases** (both grounders struggle; oracle still reasonable):
 
 <p align="center">
-  <img src="docs/assets/readme_qualitative_failures.png" alt="RefCOCO val failure taxonomy" width="980">
+  <img src="docs/assets/comparison_failures.png" alt="RefCOCO val: hard referring expressions" width="1000">
 </p>
 
-These 8 examples (24 image panels) are a visual sample from full val runs (3,811 refs on RefCOCO alone). More labeled cases — spatial, attribute, rare phrases, hallucination probe — live under [`research_paper/figures/`](research_paper/figures/). Aggregate numbers for every method and split are in [`benchmarks/`](benchmarks/) and the Results section below.
+**Figure 3 — Failure taxonomy** (cases where hybrid picks the wrong object; DINO-Tiny often correct):
+
+<p align="center">
+  <img src="docs/assets/readme_qualitative_failures.png" alt="RefCOCO val failure modes" width="1000">
+</p>
+
+Green box = grounder prediction. Red overlay = SAM 2.1 mask. mIoU = mask overlap vs RefCOCO GT.
+
+More exported panels (12 case folders, hallucination probe): [`research_paper/figures/`](research_paper/figures/). All methods and splits: [`benchmarks/`](benchmarks/) and Results below.
 
 ## Installation
 
