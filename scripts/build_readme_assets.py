@@ -91,44 +91,57 @@ def build_main_examples() -> None:
         ("DINO-Tiny + SAM2", "dino_overlay.png"),
         ("Locate-SAM2 hybrid", "ours_overlay.png"),
     ]
-    col_w, frame_h = 430, 300
-    margin, gap = 54, 28
-    header_h, row_h = 190, 465
-    width = margin * 2 + len(columns) * col_w + (len(columns) - 1) * gap
-    height = header_h + len(cases) * row_h + 42
+    col_w, frame_h = 420, 292
+    margin, gap = 54, 0
+    header_h, row_h = 210, 465
+    width = margin * 2 + len(columns) * col_w
+    height = header_h + len(cases) * row_h + 54
     canvas = Image.new("RGB", (width, height), PAPER)
     draw = ImageDraw.Draw(canvas)
 
     draw.text((margin, 38), "RefCOCO qualitative examples", font=font(36, True), fill=INK)
     draw.text(
         (margin, 92),
-        "Green boxes are grounder predictions; red masks are SAM 2.1 outputs. Rows use validation examples.",
+        "Each row is one validation expression. Green boxes are grounder predictions; red masks are SAM 2.1 outputs.",
         font=font(20),
         fill=MUTED,
     )
 
+    table_x0, table_y0 = margin, 132
+    table_x1 = width - margin
+    draw.rounded_rectangle((table_x0, table_y0, table_x1, height - 38), radius=8, fill=WHITE, outline=GRID, width=2)
+    draw.rectangle((table_x0, table_y0, table_x1, table_y0 + 58), fill=(241, 245, 249))
+
     for idx, (label, _) in enumerate(columns):
-        x = margin + idx * (col_w + gap)
+        x = margin + idx * col_w
         tw, _ = text_size(draw, label, font(22, True))
-        draw.text((x + (col_w - tw) // 2, 140), label, font=font(22, True), fill=INK)
+        draw.text((x + (col_w - tw) // 2, table_y0 + 17), label, font=font(22, True), fill=INK)
+        if idx > 0:
+            draw.line((x, table_y0, x, height - 38), fill=GRID, width=2)
 
     y = header_h
     for case, row_title in cases:
         m = meta(case)
-        draw.line((margin, y - 16, width - margin, y - 16), fill=GRID, width=2)
-        draw.text((margin, y), row_title, font=font(23, True), fill=INK)
+        draw.line((table_x0, y - 20, table_x1, y - 20), fill=GRID, width=2)
+        title_end = draw_wrapped(draw, (margin + 22, y), row_title, font(22, True), INK, 31, line_gap=4)
         query = f"Expression: \"{m['query']}\""
-        draw_wrapped(draw, (margin, y + 36), query, font(18), MUTED, 86)
+        draw_wrapped(draw, (margin + 22, title_end + 8), query, font(18), MUTED, 34)
 
+        image_y = y + 112
         for idx, (_, filename) in enumerate(columns):
-            x = margin + idx * (col_w + gap)
-            img = fit_image(FIGURES / case / filename, (col_w - 18, frame_h - 18))
-            paste_framed(canvas, img, (x, y + 92), (col_w, frame_h))
+            x = margin + idx * col_w
+            img = fit_image(FIGURES / case / filename, (col_w - 54, frame_h - 18))
+            paste_framed(canvas, img, (x + 24, image_y), (col_w - 48, frame_h))
 
-        dino = f"DINO mIoU {m['dino_miou']:.3f}"
+        dino = f"Tiny mIoU {m['dino_miou']:.3f}"
         ours = f"Hybrid mIoU {m['ours_miou']:.3f}"
-        draw.text((margin + col_w + gap + 12, y + 92 + frame_h + 14), dino, font=font(18, True), fill=RED)
-        draw.text((margin + 2 * (col_w + gap) + 12, y + 92 + frame_h + 14), ours, font=font(18, True), fill=GREEN)
+        metric_y = image_y + frame_h + 16
+        dino_w, _ = text_size(draw, dino, font(18, True))
+        ours_w, _ = text_size(draw, ours, font(18, True))
+        dino_x = margin + col_w + (col_w - dino_w) // 2
+        ours_x = margin + 2 * col_w + (col_w - ours_w) // 2
+        draw.text((dino_x, metric_y), dino, font=font(18, True), fill=RED)
+        draw.text((ours_x, metric_y), ours, font=font(18, True), fill=GREEN)
         y += row_h
 
     OUT.mkdir(parents=True, exist_ok=True)

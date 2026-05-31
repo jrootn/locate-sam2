@@ -44,6 +44,14 @@ Grounders are compared under the same adapter and SAM 2.1 weights.
 
 The examples below are from RefCOCO validation. Green boxes are grounder predictions, red overlays are SAM 2.1 masks, and mIoU is computed against the RefCOCO ground-truth mask.
 
+| Column | What it shows |
+|--------|---------------|
+| Input image | Original COCO image and referring expression |
+| DINO-Tiny + SAM2 | Lightweight visual baseline exported with per-case overlays |
+| Locate-SAM2 hybrid | LocateAnything-3B hybrid grounding with the same SAM2 adapter |
+
+DINO-Base is the primary quantitative baseline in the result tables below. The qualitative panel uses DINO-Tiny because those per-case overlays were exported with the manuscript figures.
+
 <p align="center">
   <img src="docs/assets/readme_refcoco_examples.png" alt="RefCOCO qualitative examples comparing input images, DINO-Tiny plus SAM2, and Locate-SAM2 hybrid" width="1000">
 </p>
