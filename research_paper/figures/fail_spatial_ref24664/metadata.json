@@ -7,5 +7,6 @@
   "dino_miou": 0.8989287377736377,
   "ours_box_iou": 0.9366369142699006,
   "dino_box_iou": 0.9531509476328848,
+  "grounder_baseline": "grounding_dino_tiny",
   "label_for_paper": "Failure (ii): spatial / ordinal language"
 }

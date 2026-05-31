@@ -1,0 +1,12 @@
+{
+  "failure_mode": "spatial",
+  "ref_id": 28682,
+  "image_id": 251368,
+  "query": "right basket",
+  "ours_miou": 0.023792288016987597,
+  "dino_miou": 0.5538090228355715,
+  "ours_box_iou": 0.46525087395811077,
+  "dino_box_iou": 0.45553485704340974,
+  "grounder_baseline": "grounding_dino_tiny",
+  "label_for_paper": "Failure (ii): spatial / ordinal language"
+}

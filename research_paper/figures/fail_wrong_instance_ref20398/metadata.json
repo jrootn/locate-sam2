@@ -7,5 +7,6 @@
   "dino_miou": 0.9693681896833933,
   "ours_box_iou": 0.0,
   "dino_box_iou": 0.9431577554280294,
+  "grounder_baseline": "grounding_dino_tiny",
   "label_for_paper": "Failure (i): wrong object instance"
 }

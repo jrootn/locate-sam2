@@ -7,5 +7,6 @@
   "dino_miou": 0.9860792254580786,
   "ours_box_iou": 0.9759683961358616,
   "dino_box_iou": 0.9879399655510444,
+  "grounder_baseline": "grounding_dino_tiny",
   "label_for_paper": "Failure (iv): rare or long expression"
 }

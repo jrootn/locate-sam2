@@ -58,6 +58,7 @@ def pick_cases(
     *,
     per_mode: int,
     existing: set[str],
+    force: bool = False,
 ) -> list[tuple[str, int]]:
     common = set(ours) & set(dino)
     buckets: dict[str, list[tuple[int, float]]] = {
@@ -82,7 +83,7 @@ def pick_cases(
         n = 0
         for ref_id, _ in items:
             folder = f"fail_{mode}_ref{ref_id}"
-            if folder in existing:
+            if folder in existing and not force:
                 continue
             chosen.append((mode, ref_id))
             n += 1
@@ -132,6 +133,7 @@ def export_case(
         "dino_miou": drec["iou"],
         "ours_box_iou": orec.get("box_iou"),
         "dino_box_iou": drec.get("box_iou"),
+        "grounder_baseline": "grounding_dino_tiny",
         "label_for_paper": {
             "wrong_instance": "Failure (i): wrong object instance",
             "spatial": "Failure (ii): spatial / ordinal language",
@@ -149,6 +151,7 @@ def main() -> None:
     parser.add_argument("--dino-records", type=Path, required=True)
     parser.add_argument("--paper-dir", type=Path, default=ROOT / "research_paper" / "figures")
     parser.add_argument("--per-mode", type=int, default=2)
+    parser.add_argument("--force", action="store_true", help="Re-export even if folder exists")
     parser.add_argument("--copy-existing-wins", action="store_true")
     args = parser.parse_args()
 
@@ -159,7 +162,7 @@ def main() -> None:
 
     args.paper_dir.mkdir(parents=True, exist_ok=True)
     existing = {p.name for p in args.paper_dir.iterdir() if p.is_dir()}
-    picks = pick_cases(ours, dino, per_mode=args.per_mode, existing=existing)
+    picks = pick_cases(ours, dino, per_mode=args.per_mode, existing=existing, force=args.force)
 
     ours_pipe = LocateSam2Pipeline(
         grounder="locateanything",

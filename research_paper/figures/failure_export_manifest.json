@@ -10,6 +10,11 @@
     "dir": "fail_wrong_instance_ref13650"
   },
   {
+    "mode": "wrong_instance",
+    "ref_id": 9670,
+    "dir": "fail_wrong_instance_ref9670"
+  },
+  {
     "mode": "spatial",
     "ref_id": 24664,
     "dir": "fail_spatial_ref24664"
@@ -18,6 +23,11 @@
     "mode": "spatial",
     "ref_id": 5750,
     "dir": "fail_spatial_ref5750"
+  },
+  {
+    "mode": "spatial",
+    "ref_id": 28682,
+    "dir": "fail_spatial_ref28682"
   },
   {
     "mode": "attribute",
@@ -30,6 +40,11 @@
     "dir": "fail_attribute_ref18360"
   },
   {
+    "mode": "attribute",
+    "ref_id": 4414,
+    "dir": "fail_attribute_ref4414"
+  },
+  {
     "mode": "rare_or_long",
     "ref_id": 36776,
     "dir": "fail_rare_or_long_ref36776"
@@ -38,5 +53,10 @@
     "mode": "rare_or_long",
     "ref_id": 32628,
     "dir": "fail_rare_or_long_ref32628"
+  },
+  {
+    "mode": "rare_or_long",
+    "ref_id": 49804,
+    "dir": "fail_rare_or_long_ref49804"
   }
 ]

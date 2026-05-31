@@ -7,5 +7,6 @@
   "dino_miou": 0.822036176504474,
   "ours_box_iou": 0.36998008214969047,
   "dino_box_iou": 0.9316926877516435,
+  "grounder_baseline": "grounding_dino_tiny",
   "label_for_paper": "Failure (iii): attribute ambiguity"
 }

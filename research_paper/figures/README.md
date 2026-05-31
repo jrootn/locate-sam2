@@ -1,47 +1,42 @@
-# Paper figures
+# Paper figures (DINO-Tiny + hybrid)
 
-Qualitative panels for self-contained PDF builds (tracked in git).
+All qualitative exports use **Grounding DINO-Tiny + SAM2** as the visual baseline and **Locate-SAM2 hybrid** as ours. Quantitative tables use DINO-Base (Swin-T) as the primary baseline.
 
-## Win / baseline comparison (existing)
+## Fixed LaTeX cases
 
-| Directory | Mode | ref_id |
-|-----------|------|--------|
-| `win_ref5466/` | Win vs DINO-Tiny | 5466 |
-| `win_ref2764/` | Spatial win | 2764 |
-| `fail_ref2885/` | Wrong instance (ours fails) | 2885 |
-| `both_ref3281/` | Both succeed | 3281 |
+| Directory | ref_id | Role |
+|-----------|--------|------|
+| `win_ref5466/` | 5466 | Win — spatial ("right white spoon") |
+| `win_ref2764/` | 2764 | Win — spatial ("right") |
+| `fail_ref2885/` | 2885 | Hybrid failure — wrong person |
+| `both_ref3281/` | 3281 | Both grounders succeed |
 
-## Failure taxonomy (auto-exported)
+Each dir: `image_raw.jpg`, `dino_overlay.png`, `ours_overlay.png`, `query.txt`, `metadata.json`.
 
-Labeled dirs: `fail_{mode}_ref{id}/` where mode is:
+## Failure taxonomy (`fail_{mode}_ref{id}/`)
 
-| Folder prefix | Paper label |
-|---------------|-------------|
-| `fail_wrong_instance_*` | Failure (i): wrong object instance |
-| `fail_spatial_*` | Failure (ii): spatial / ordinal language |
-| `fail_attribute_*` | Failure (iii): attribute ambiguity |
-| `fail_rare_or_long_*` | Failure (iv): rare or long expression |
+| Mode | Count (target ≥3) | Paper example |
+|------|------------------:|---------------|
+| `wrong_instance` | 3 | `fail_wrong_instance_ref20398` |
+| `spatial` | 3 | `fail_spatial_ref5750` |
+| `attribute` | 3 | `fail_attribute_ref18360` |
+| `rare_or_long` | 3 | `fail_rare_or_long_ref36776` |
 
-Each contains: `image_raw.jpg`, `ours_overlay.png`, `dino_overlay.png`, `query.txt`, `metadata.json`.
+## Hallucination probe
 
-Regenerate on VM:
+`hallucination_probe/` — negative prompts on val images; see `metadata.json`.
+
+## README composites
+
+Built offline into `docs/assets/`:
+
+- `comparison_wins.png`, `comparison_failures.png` — 5-column grid (input, GT, DINO-Tiny, hybrid, oracle)
+- `readme_qualitative_wins.png`, `readme_qualitative_failures.png` — 3-column taxonomy panels
+
+## Regenerate (GPU VM)
+
 ```bash
-python scripts/export_paper_figures.py \
-  --ours-records outputs/full_val/locate_sam2_hybrid_full_records.json \
-  --dino-records outputs/full_val/dino_tiny_full_records.json \
-  --per-mode 2
+bash scripts/run_full_figure_export.sh
 ```
 
-## Hallucination / negative-prompt probe
-
-`hallucination_probe/` — unrelated prompts on COCO images; see `metadata.json` and `outputs/analysis/hallucination_probe.json`.
-
-Regenerate:
-```bash
-python scripts/probe_hallucination.py --n-images 8
-```
-
-## Comparison grids
-
-- `comparison_wins.png`
-- `comparison_failures.png`
+Requires `outputs/full_val/locate_sam2_hybrid_full_records.json` and `dino_tiny_full_records.json`.

@@ -1,0 +1,12 @@
+{
+  "failure_mode": "rare_or_long",
+  "ref_id": 49804,
+  "image_id": 2567,
+  "query": "woman wearing glasses",
+  "ours_miou": 0.038121308899196515,
+  "dino_miou": 0.7231141776686791,
+  "ours_box_iou": 0.349194719890758,
+  "dino_box_iou": 0.6629617880255839,
+  "grounder_baseline": "grounding_dino_tiny",
+  "label_for_paper": "Failure (iv): rare or long expression"
+}
