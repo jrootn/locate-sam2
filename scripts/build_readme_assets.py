@@ -54,6 +54,18 @@ def draw_wrapped(
     return y
 
 
+def draw_centered(
+    draw: ImageDraw.ImageDraw,
+    center_x: int,
+    y: int,
+    text: str,
+    fnt: ImageFont.FreeTypeFont,
+    fill: tuple[int, int, int],
+) -> None:
+    width, _ = text_size(draw, text, fnt)
+    draw.text((center_x - width // 2, y), text, font=fnt, fill=fill)
+
+
 def fit_image(path: Path, size: tuple[int, int]) -> Image.Image:
     img = Image.open(path).convert("RGB")
     return ImageOps.contain(img, size, Image.Resampling.LANCZOS)
@@ -136,12 +148,8 @@ def build_main_examples() -> None:
         dino = f"Tiny mIoU {m['dino_miou']:.3f}"
         ours = f"Hybrid mIoU {m['ours_miou']:.3f}"
         metric_y = image_y + frame_h + 16
-        dino_w, _ = text_size(draw, dino, font(18, True))
-        ours_w, _ = text_size(draw, ours, font(18, True))
-        dino_x = margin + col_w + (col_w - dino_w) // 2
-        ours_x = margin + 2 * col_w + (col_w - ours_w) // 2
-        draw.text((dino_x, metric_y), dino, font=font(18, True), fill=RED)
-        draw.text((ours_x, metric_y), ours, font=font(18, True), fill=GREEN)
+        draw_centered(draw, margin + col_w + col_w // 2, metric_y, dino, font(18, True), RED)
+        draw_centered(draw, margin + 2 * col_w + col_w // 2, metric_y, ours, font(18, True), GREEN)
         y += row_h
 
     OUT.mkdir(parents=True, exist_ok=True)
@@ -150,12 +158,12 @@ def build_main_examples() -> None:
 
 def build_failure_taxonomy() -> None:
     cases = [
-        ("fail_wrong_instance_ref20398", "Wrong instance"),
-        ("fail_spatial_ref5750", "Spatial language"),
-        ("fail_attribute_ref18360", "Attribute ambiguity"),
-        ("fail_rare_or_long_ref36776", "Rare or unusual phrase"),
+        ("fail_wrong_instance_ref20398", "Wrong instance", "3 exported cases"),
+        ("fail_spatial_ref5750", "Spatial or ordinal language", "3 exported cases"),
+        ("fail_attribute_ref18360", "Attribute ambiguity", "3 exported cases"),
+        ("fail_rare_or_long_ref36776", "Rare or unusual phrase", "3 exported cases"),
     ]
-    card_w, card_h = 630, 500
+    card_w, card_h = 650, 520
     margin, gap = 54, 34
     width = margin * 2 + 2 * card_w + gap
     height = 150 + 2 * card_h + gap + 44
@@ -170,36 +178,44 @@ def build_failure_taxonomy() -> None:
         fill=MUTED,
     )
 
-    for i, (case, title) in enumerate(cases):
+    for i, (case, title, count_label) in enumerate(cases):
         row, col = divmod(i, 2)
         x = margin + col * (card_w + gap)
         y = 150 + row * (card_h + gap)
         draw.rounded_rectangle((x, y, x + card_w, y + card_h), radius=8, fill=WHITE, outline=GRID, width=2)
 
         m = meta(case)
-        draw.text((x + 24, y + 22), title, font=font(24, True), fill=INK)
-        draw_wrapped(draw, (x + 24, y + 60), f"Expression: \"{m['query']}\"", font(17), MUTED, 58)
+        draw.text((x + 24, y + 22), title, font=font(23, True), fill=INK)
+        count_w, _ = text_size(draw, count_label, font(15, True))
+        draw.rounded_rectangle((x + card_w - count_w - 46, y + 24, x + card_w - 22, y + 52), radius=7, fill=(241, 245, 249))
+        draw.text((x + card_w - count_w - 34, y + 29), count_label, font=font(15, True), fill=MUTED)
+        draw_wrapped(draw, (x + 24, y + 64), f"Expression: \"{m['query']}\"", font(17), MUTED, 60)
 
         img_w, img_h = 276, 250
-        y_img = y + 126
+        y_img = y + 138
         dino = fit_image(FIGURES / case / "dino_overlay.png", (img_w - 12, img_h - 12))
         ours = fit_image(FIGURES / case / "ours_overlay.png", (img_w - 12, img_h - 12))
-        paste_framed(canvas, dino, (x + 24, y_img), (img_w, img_h))
-        paste_framed(canvas, ours, (x + 330, y_img), (img_w, img_h))
-        draw.text((x + 24, y_img + img_h + 14), f"DINO mIoU {m['dino_miou']:.3f}", font=font(18, True), fill=BLUE)
-        draw.text((x + 330, y_img + img_h + 14), f"Hybrid mIoU {m['ours_miou']:.3f}", font=font(18, True), fill=RED)
+        dino_x, ours_x = x + 24, x + 350
+        paste_framed(canvas, dino, (dino_x, y_img), (img_w, img_h))
+        paste_framed(canvas, ours, (ours_x, y_img), (img_w, img_h))
+        draw_centered(draw, dino_x + img_w // 2, y_img + img_h + 16, "DINO-Tiny + SAM2", font(16, True), BLUE)
+        draw_centered(draw, ours_x + img_w // 2, y_img + img_h + 16, "Locate-SAM2 hybrid", font(16, True), RED)
+        draw_centered(draw, dino_x + img_w // 2, y_img + img_h + 44, f"mIoU {m['dino_miou']:.3f}", font(18, True), BLUE)
+        draw_centered(draw, ours_x + img_w // 2, y_img + img_h + 44, f"mIoU {m['ours_miou']:.3f}", font(18, True), RED)
 
     canvas.save(OUT / "readme_failure_taxonomy.png", quality=95)
 
 
 def build_hallucination_probe() -> None:
-    case = "img510591_neg8763"
+    with (FIGURES / "hallucination_probe" / "metadata.json").open() as f:
+        m = json.load(f)
+    rows = [r for r in m["rows"] if r.get("emitted_mask")]
+    preferred = next((r for r in rows if r["case_id"] == "img510591_neg8763"), None)
+    row = preferred or max(rows, key=lambda r: r["sam_mask_score"])
+    case = row["case_id"]
     base = FIGURES / "hallucination_probe" / case
     prompt = (base / "query.txt").read_text().strip()
     gt_prompt = (base / "gt_query.txt").read_text().strip()
-    with (FIGURES / "hallucination_probe" / "metadata.json").open() as f:
-        m = json.load(f)
-    row = next(r for r in m["rows"] if r["case_id"] == case)
 
     width, height = 1320, 660
     margin, gap = 54, 36
@@ -238,11 +254,13 @@ def build_hallucination_probe() -> None:
         MUTED,
         58,
     )
-    draw.text(
-        (margin + frame_w + gap, y_caption + 10),
-        f"Mask emitted; SAM score {row['sam_mask_score']:.3f}. Probe emission rate: {m['mask_emission_rate'] * 100:.1f}%.",
-        font=font(18, True),
-        fill=RED,
+    draw_centered(
+        draw,
+        margin + frame_w + gap + frame_w // 2,
+        y_caption + 10,
+        f"Mask emitted; SAM score {row['sam_mask_score']:.3f}; emission rate {m['mask_emission_rate'] * 100:.1f}%.",
+        font(18, True),
+        RED,
     )
 
     canvas.save(OUT / "readme_hallucination_probe.png", quality=95)

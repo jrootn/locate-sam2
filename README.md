@@ -52,6 +52,15 @@ The examples below are from RefCOCO validation. Green boxes are grounder predict
 
 DINO-Base is the primary quantitative baseline in the result tables below. The qualitative panel uses DINO-Tiny because those per-case overlays were exported with the manuscript figures.
 
+Exported qualitative coverage:
+
+| Export group | Count | Location |
+|--------------|------:|----------|
+| Fixed manuscript cases | 4 | [`research_paper/figures/`](research_paper/figures/) |
+| Failure taxonomy | 12 | [`research_paper/figures/fail_*`](research_paper/figures/) |
+| Hallucination probe cases | 33 | [`research_paper/figures/hallucination_probe/`](research_paper/figures/hallucination_probe/) |
+| README composites | 3 | [`docs/assets/`](docs/assets/) |
+
 <p align="center">
   <img src="docs/assets/readme_refcoco_examples.png" alt="RefCOCO qualitative examples comparing input images, DINO-Tiny plus SAM2, and Locate-SAM2 hybrid" width="1000">
 </p>
