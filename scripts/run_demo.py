@@ -42,7 +42,7 @@ def main() -> None:
         )
         print(f"saved: {args.output}")
     else:
-        print("No boxes detected — nothing to segment.")
+        print("No boxes detected; nothing to segment.")
 
 
 if __name__ == "__main__":

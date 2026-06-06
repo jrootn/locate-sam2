@@ -58,7 +58,11 @@ class Sam2Segmenter:
 
         if crop_box is not None and crop_box.is_valid():
             x1, y1, x2, y2 = (int(v) for v in crop_box.as_xyxy())
+            if x2 <= x1 or y2 <= y1:
+                return None
             work_image = image.crop((x1, y1, x2, y2))
+            if work_image.size[0] < 1 or work_image.size[1] < 1:
+                return None
             offset_x = float(x1)
             offset_y = float(y1)
             local_box = Box(
@@ -67,6 +71,11 @@ class Sam2Segmenter:
                 box.x2 - offset_x,
                 box.y2 - offset_y,
             ).clamp(work_image.size[0], work_image.size[1])
+            if not local_box.is_valid():
+                return None
+
+        if work_image.size[0] < 1 or work_image.size[1] < 1:
+            return None
 
         processor_kwargs: dict = {"images": work_image, "return_tensors": "pt"}
 
@@ -80,8 +89,11 @@ class Sam2Segmenter:
         else:
             processor_kwargs["input_boxes"] = [[local_box.as_xyxy()]]
 
-        inputs = self.processor(**processor_kwargs).to(self.device)
-        outputs = self.model(**inputs, multimask_output=self.multimask_output)
+        try:
+            inputs = self.processor(**processor_kwargs).to(self.device)
+            outputs = self.model(**inputs, multimask_output=self.multimask_output)
+        except (RuntimeError, ValueError, OSError):
+            return None
 
         masks = self.processor.post_process_masks(
             outputs.pred_masks.cpu(),

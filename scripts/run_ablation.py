@@ -26,6 +26,7 @@ def main() -> None:
     ablations = [
         {"tag": "abl_fast", "generation_mode": "fast"},
         {"tag": "abl_hybrid", "generation_mode": "hybrid"},
+        {"tag": "abl_slow", "generation_mode": "slow"},
         {"tag": "abl_prompt_box", "prompt_mode": "box"},
         {"tag": "abl_prompt_box_point", "prompt_mode": "box_point"},
         {"tag": "abl_prompt_point", "prompt_mode": "point"},

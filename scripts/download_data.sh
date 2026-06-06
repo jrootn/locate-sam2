@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Minimal benchmark data for RefCOCO-family eval (publish-first setup).
-# Total download: ~7–8 GB (val images + COCO mask annotations + RefCOCO JSONs)
+# Total download: ~7-8 GB (val images + COCO mask annotations + RefCOCO JSONs)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -8,7 +8,7 @@ DATA_DIR="${ROOT}/data"
 mkdir -p "${DATA_DIR}"
 
 echo "==> Data directory: ${DATA_DIR}"
-echo "==> Estimated download: ~7–8 GB (minimal eval pack)"
+echo "==> Estimated download: ~7-8 GB (minimal eval pack)"
 
 download() {
   local url="$1"

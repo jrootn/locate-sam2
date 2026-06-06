@@ -39,5 +39,6 @@ class Box:
             y2=self.y2 + py,
         ).clamp(width, height)
 
-    def is_valid(self) -> bool:
-        return self.x2 > self.x1 and self.y2 > self.y1
+    def is_valid(self, min_side: float = 1.0) -> bool:
+        """Require positive width/height; default min_side avoids zero-height int crops."""
+        return (self.x2 - self.x1) >= min_side and (self.y2 - self.y1) >= min_side

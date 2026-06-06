@@ -70,15 +70,6 @@ def main() -> None:
         tables["refcocog"].write_text(json.dumps(g_rows, indent=2))
     _print_table("RefCOCO-g", g_rows)
 
-    ood_summary = out / "ood" / "ood_summary.json"
-    if ood_summary.exists():
-        ood = json.loads(ood_summary.read_text())
-        print("\nOOD (human scores)")
-        for row in ood.get("by_domain_method", []):
-            mu = row.get("mask_usable")
-            mu_s = f"{mu:.1%}" if mu is not None else "—"
-            print(f"  {row['domain']:12} {row['method']:22} mask_usable={mu_s} (n={row['n_scored']})")
-
     print("\nTables written:")
     for name, path in tables.items():
         status = "ok" if path.exists() else "pending"

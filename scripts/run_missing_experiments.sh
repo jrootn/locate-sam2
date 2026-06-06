@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Run numeric benchmarks still missing from the v1 suite (RefCOCO-g, RefCOCO+ extras).
-# OOD is separate: add images to experiments/ood/images/, then scripts/run_ood_batch.py
+# Run numeric benchmarks still missing from the RefCOCO-family suite
+# (RefCOCO-g, RefCOCO+ extras).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -77,12 +77,6 @@ maybe_eval() {
 
   echo "--- Build consolidated tables ---"
   python scripts/build_experiment_tables.py
-
-  echo ""
-  echo "OOD (manual): place images in experiments/ood/images/, edit prompts.csv, then:"
-  echo "  python scripts/run_ood_batch.py"
-  echo "  # score outputs/ood/results_template.csv -> results.csv"
-  echo "  python scripts/aggregate_ood_scores.py"
 
   echo "=== MISSING EXPERIMENTS DONE $(date -Is) ==="
 } | tee "${LOG}"

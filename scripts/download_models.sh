@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download model weights into ./models/ (run locally or on GCP — not on git).
+# Download model weights into ./models/ (run locally or on GCP; not on git).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -32,7 +32,7 @@ echo "Done. Models ready under ${MODELS_DIR}/"
 du -sh "${MODELS_DIR}"/* 2>/dev/null || true
 
 echo ""
-echo "Optional — SAM 3 (gated, request access first):"
+echo "Optional: SAM 3 (gated, request access first):"
 echo "  https://huggingface.co/facebook/sam3"
 echo "  hf auth login"
 echo "  hf download facebook/sam3.1 --local-dir ${MODELS_DIR}/sam3.1"

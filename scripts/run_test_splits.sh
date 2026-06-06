@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# RefCOCO / RefCOCO+ testA and testB — hybrid + DINO-Base only.
+# RefCOCO / RefCOCO+ testA and testB; hybrid + DINO-Base only.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

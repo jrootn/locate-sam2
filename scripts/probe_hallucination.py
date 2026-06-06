@@ -33,7 +33,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--n-images", type=int, default=8)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--output-dir", type=Path, default=Path("research_paper/figures/hallucination_probe"))
+    parser.add_argument("--output-dir", type=Path, default=Path("outputs/analysis/hallucination_probe_cases"))
     parser.add_argument("--analysis-json", type=Path, default=Path("outputs/analysis/hallucination_probe.json"))
     args = parser.parse_args()
 

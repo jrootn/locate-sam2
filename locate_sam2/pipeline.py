@@ -9,6 +9,7 @@ from PIL import Image
 
 from locate_sam2.adapter import AdapterConfig, AdapterResult, PromptToMaskAdapter
 from locate_sam2.config import load_config, resolve_path
+from locate_sam2.images import load_rgb_image
 from locate_sam2.dino import GroundingDinoGrounder
 from locate_sam2.locate import LocateAnythingGrounder
 from locate_sam2.oracle import OracleBoxGrounder
@@ -121,7 +122,7 @@ class LocateSam2Pipeline:
         return self._to_result(self.adapter.run(image, phrase))
 
     def run_path(self, image_path: Path, phrase: str, multi: bool = False) -> PipelineResult:
-        return self.run(Image.open(image_path), phrase, multi=multi)
+        return self.run(load_rgb_image(image_path), phrase, multi=multi)
 
 
 LocateGroundedSamPipeline = LocateSam2Pipeline

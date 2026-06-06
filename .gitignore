@@ -1,4 +1,4 @@
-# Model weights (download separately — see scripts/download_models.sh)
+# Model weights (download separately; see scripts/download_models.sh)
 models/
 *.pt
 *.pth
@@ -16,7 +16,40 @@ datasets/
 *.tar
 *.tar.gz
 
-# Local eval outputs (large records/logs — summaries published under benchmarks/)
+# Local paper drafting materials. Public repo keeps code, configs, scripts, and
+# benchmark summaries needed to reproduce claims.
+GITHUB_REPO_UPDATE.md
+PAPER.md
+research_paper/
+experiments/
+src/
+
+# Local paper/README figure packaging helpers
+scripts/build_paper_figures.py
+scripts/build_readme_assets.py
+scripts/build_readme_figures.py
+scripts/export_fixed_paper_cases.py
+scripts/export_paper_figures.py
+scripts/rerender_paper_overlays.py
+scripts/restrip_paper_overlays.py
+scripts/run_full_figure_export.sh
+scripts/run_paper_pack.sh
+scripts/run_v1_complete.sh
+scripts/aggregate_ood_scores.py
+scripts/run_ood_batch.py
+scripts/bootstrap_vm.sh
+scripts/run_eval_and_stop.sh
+scripts/setup_gpu.sh
+
+# Generated/legacy README assets not referenced by README.md
+docs/assets/comparison_wins.png
+docs/assets/comparison_failures.png
+docs/assets/readme_qualitative.png
+docs/assets/readme_qualitative_wins.png
+docs/assets/readme_qualitative_failures.png
+docs/assets/manifest.json
+
+# Local eval outputs (large records/logs; summaries published under benchmarks/)
 outputs/
 results/
 runs/
@@ -30,6 +63,23 @@ __pycache__/
 venv/
 .env
 .env.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local agent / assistant instructions
+AGENTS.md
+agents.md
+CLAUDE.md
+.agents/
+.codex/
+.cursor/
+.continue/
 
 # IDE / OS
 .idea/
@@ -40,7 +90,7 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
-# Paper build artifacts (source + figures are tracked)
+# Paper build artifacts
 paper/build/
 research_paper/build/
 research_paper/*.aux
@@ -61,5 +111,8 @@ research_paper/*.fls
 paper_pack*.log
 missing_experiments.log
 
-# Hallucination probe PNG grid (stats in benchmarks/analysis/); add 1–2 panels to paper/figures manually if needed
-research_paper/figures/hallucination_probe/
+# Generated share/upload bundles
+*_overleaf*.zip
+*overleaf*.zip
+paper_bundle*.zip
+research_paper_bundle*.zip

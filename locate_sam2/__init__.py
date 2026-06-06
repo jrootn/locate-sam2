@@ -1,7 +1,6 @@
 """Locate-SAM2: fast zero-shot text-guided segmentation with parallel box grounding."""
 
-from locate_sam2.api import configure, segment
-from locate_sam2.pipeline import LocateGroundedSamPipeline, LocateSam2Pipeline, PipelineResult
+__version__ = "0.1.0"
 
 __all__ = [
     "segment",
@@ -10,4 +9,27 @@ __all__ = [
     "LocateGroundedSamPipeline",
     "PipelineResult",
 ]
-__version__ = "0.1.0"
+
+
+def __getattr__(name: str):
+    if name == "segment":
+        from locate_sam2.api import segment
+
+        return segment
+    if name == "configure":
+        from locate_sam2.api import configure
+
+        return configure
+    if name == "LocateSam2Pipeline":
+        from locate_sam2.pipeline import LocateSam2Pipeline
+
+        return LocateSam2Pipeline
+    if name == "LocateGroundedSamPipeline":
+        from locate_sam2.pipeline import LocateGroundedSamPipeline
+
+        return LocateGroundedSamPipeline
+    if name == "PipelineResult":
+        from locate_sam2.pipeline import PipelineResult
+
+        return PipelineResult
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
